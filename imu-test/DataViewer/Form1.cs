@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Net;
 using System.Net.Sockets;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace WindowsFormsApplication1
 {
@@ -19,11 +20,27 @@ namespace WindowsFormsApplication1
         float Ay = 0;
         float Az = 0;
 
+        Series Ax_series;
+        Series Ay_series;
+        Series Az_series;
+
         public Form1()
         {
             InitializeComponent();
             x = 0;
             data_receiver.RunWorkerAsync();
+
+            Ax_series = new Series("Ax");
+            Ax_series.ChartType = SeriesChartType.Line;
+            Ay_series = new Series("Ay");
+            Ay_series.ChartType = SeriesChartType.Line;
+            Az_series = new Series("Az");
+            Az_series.ChartType = SeriesChartType.Line;
+
+            chartAcc.Series.Clear();
+            chartAcc.Series.Add(Ax_series);
+            chartAcc.Series.Add(Ay_series);
+            chartAcc.Series.Add(Az_series);
 
         }
 
@@ -50,9 +67,23 @@ namespace WindowsFormsApplication1
 
         private void udp_server_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            tb_Ax.Text = Ax.ToString();
-            tb_Ay.Text = Ay.ToString();
-            tb_Az.Text = Az.ToString();
+            if (!this.IsDisposed)
+            {
+                tb_Ax.Text = Ax.ToString();
+                tb_Ay.Text = Ay.ToString();
+                tb_Az.Text = Az.ToString();
+
+                chartAcc.Series[0].Points.Add(Ax);
+                chartAcc.Series[1].Points.Add(Ay);
+                chartAcc.Series[2].Points.Add(Az);
+
+                if (chartAcc.Series[0].Points.Count > 500)
+                {
+                    chartAcc.Series[0].Points.RemoveAt(0);
+                    chartAcc.Series[1].Points.RemoveAt(0);
+                    chartAcc.Series[2].Points.RemoveAt(0);
+                }
+            }
         }
     }
 }
