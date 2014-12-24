@@ -1,3 +1,5 @@
 imu-test/imu-test/obj
 imu-test/imu-test/bin
 *.suo
+imu-test/DataViewer/obj/
+imu-test/DataViewer/bin/
