@@ -41,6 +41,11 @@
             this.tb_Az = new System.Windows.Forms.TextBox();
             this.data_receiver = new System.ComponentModel.BackgroundWorker();
             this.chartAcc = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.tbQ0 = new System.Windows.Forms.TextBox();
+            this.tbQ1 = new System.Windows.Forms.TextBox();
+            this.tbQ3 = new System.Windows.Forms.TextBox();
+            this.tbQ2 = new System.Windows.Forms.TextBox();
+            this.glControl = new Tao.Platform.Windows.SimpleOpenGlControl();
             ((System.ComponentModel.ISupportInitialize)(this.chartAcc)).BeginInit();
             this.SuspendLayout();
             // 
@@ -134,11 +139,61 @@
             this.chartAcc.TabIndex = 5;
             this.chartAcc.Text = "chartAcc";
             // 
+            // tbQ0
+            // 
+            this.tbQ0.Location = new System.Drawing.Point(43, 203);
+            this.tbQ0.Name = "tbQ0";
+            this.tbQ0.Size = new System.Drawing.Size(100, 21);
+            this.tbQ0.TabIndex = 6;
+            // 
+            // tbQ1
+            // 
+            this.tbQ1.Location = new System.Drawing.Point(163, 203);
+            this.tbQ1.Name = "tbQ1";
+            this.tbQ1.Size = new System.Drawing.Size(100, 21);
+            this.tbQ1.TabIndex = 6;
+            // 
+            // tbQ3
+            // 
+            this.tbQ3.Location = new System.Drawing.Point(405, 203);
+            this.tbQ3.Name = "tbQ3";
+            this.tbQ3.Size = new System.Drawing.Size(100, 21);
+            this.tbQ3.TabIndex = 6;
+            // 
+            // tbQ2
+            // 
+            this.tbQ2.Location = new System.Drawing.Point(285, 203);
+            this.tbQ2.Name = "tbQ2";
+            this.tbQ2.Size = new System.Drawing.Size(100, 21);
+            this.tbQ2.TabIndex = 6;
+            // 
+            // glControl
+            // 
+            this.glControl.AccumBits = ((byte)(0));
+            this.glControl.AutoCheckErrors = false;
+            this.glControl.AutoFinish = false;
+            this.glControl.AutoMakeCurrent = true;
+            this.glControl.AutoSwapBuffers = true;
+            this.glControl.BackColor = System.Drawing.Color.Black;
+            this.glControl.ColorBits = ((byte)(32));
+            this.glControl.DepthBits = ((byte)(16));
+            this.glControl.Location = new System.Drawing.Point(46, 244);
+            this.glControl.Name = "glControl";
+            this.glControl.Size = new System.Drawing.Size(269, 264);
+            this.glControl.StencilBits = ((byte)(0));
+            this.glControl.TabIndex = 7;
+            this.glControl.Paint += new System.Windows.Forms.PaintEventHandler(this.glControl_Paint);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(579, 247);
+            this.ClientSize = new System.Drawing.Size(579, 520);
+            this.Controls.Add(this.glControl);
+            this.Controls.Add(this.tbQ2);
+            this.Controls.Add(this.tbQ3);
+            this.Controls.Add(this.tbQ1);
+            this.Controls.Add(this.tbQ0);
             this.Controls.Add(this.chartAcc);
             this.Controls.Add(this.tb_Az);
             this.Controls.Add(this.tb_Ay);
@@ -166,6 +221,11 @@
         private System.Windows.Forms.TextBox tb_Az;
         private System.ComponentModel.BackgroundWorker data_receiver;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartAcc;
+        private System.Windows.Forms.TextBox tbQ0;
+        private System.Windows.Forms.TextBox tbQ1;
+        private System.Windows.Forms.TextBox tbQ3;
+        private System.Windows.Forms.TextBox tbQ2;
+        private Tao.Platform.Windows.SimpleOpenGlControl glControl;
     }
 }
 
