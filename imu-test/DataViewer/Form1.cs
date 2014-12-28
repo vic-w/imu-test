@@ -32,7 +32,8 @@ namespace WindowsFormsApplication1
         double Tx = 0;
         double Ty = 0;
         double Tz = 0;
-        float[] Q = new float[4];
+        float[] Q;
+        float[] M;
 
         Series Ax_series;
         Series Ay_series;
@@ -46,10 +47,29 @@ namespace WindowsFormsApplication1
 
             const float SampleTime = 0.02F;
             imu = new MadgwickAHRS(SampleTime);
+            Q = new float[4];
             Q[0] = 0;
             Q[1] = 0;
             Q[2] = 0;
             Q[3] = 1;
+            M = new float[16];
+            M[0] = 1;
+            M[1] = 0;
+            M[2] = 0;
+            M[3] = 0;
+            M[4] = 0;
+            M[5] = 1;
+            M[6] = 0;
+            M[7] = 0;
+            M[8] = 0;
+            M[9] = 0;
+            M[10] = 1;
+            M[11] = 0;
+            M[12] = 0;
+            M[13] = 0;
+            M[14] = 0;
+            M[15] = 1;
+
             r = 0;
             x = 0;
             data_receiver.RunWorkerAsync();
@@ -91,6 +111,7 @@ namespace WindowsFormsApplication1
                     Tz = System.BitConverter.ToDouble(bytes, 44);
                     imu.Update(Gx, Gy, Gz, Ax, Ay, Az);
                     Q = imu.Quaternion;
+                    M = imu.rotMat();
                     data_receiver.ReportProgress(0);
                     x++;
                 }
@@ -126,10 +147,11 @@ namespace WindowsFormsApplication1
 
         private void glControl_Paint(object sender, PaintEventArgs e)
         {
-            r += 0.01F;
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
             Gl.glLoadIdentity();
-            Gl.glRotated(-Q[0]*180/3.14F, Q[1], Q[2], Q[3]);
+            Gl.glMatrixMode(Gl.GL_MODELVIEW);
+            Gl.glMultMatrixf(M);
+            //Gl.glRotated(-Q[0]*180/3.14F, Q[1], Q[2], Q[3]);
             //Gl.glRotated(90, 0, 0, 1);
             Gl.glBegin(Gl.GL_TRIANGLES);
             Gl.glColor3f(1.0f, 0.0f, 0.0f);
@@ -139,6 +161,58 @@ namespace WindowsFormsApplication1
             Gl.glColor3f(0.0f, 0.0f, 1.0f);
             Gl.glVertex2d(0.5, 0.867);
             Gl.glEnd();
+
+            Gl.glBegin(Gl.GL_POLYGON);
+             Gl.glColor3f(1.0f, 0.0f, 0.0f);
+            Gl.glVertex3d(0.5f, 0.5f, 0.5f);
+             Gl.glColor3f(1.0f, 0.0f, 0.0f);
+            Gl.glVertex3d(0.5f, -0.5f, 0.5f);
+             Gl.glColor3f(1.0f, 0.0f, 0.0f);
+            Gl.glVertex3d(0.5f, -0.5f, -0.5f);
+             Gl.glColor3f(1.0f, 0.0f, 0.0f);
+            Gl.glVertex3d(0.5f, 0.5f, -0.5f);
+            Gl.glEnd();
+            
+            Gl.glBegin(Gl.GL_POLYGON);
+             Gl.glColor3f(1.0f, 1.0f, 0.0f);
+            Gl.glVertex3d(-0.5f, 0.5f, 0.5f);
+            Gl.glVertex3d(-0.5f, -0.5f, 0.5f);
+            Gl.glVertex3d(-0.5f, -0.5f, -0.5f);
+            Gl.glVertex3d(-0.5f, 0.5f, -0.5f);
+            Gl.glEnd();
+
+            Gl.glBegin(Gl.GL_POLYGON);
+             Gl.glColor3f(1.0f, 1.0f, 1.0f);
+            Gl.glVertex3d(0.5f, 0.5f, 0.5f);
+            Gl.glVertex3d(-0.5f, 0.5f, 0.5f);
+            Gl.glVertex3d(-0.5f, 0.5f, -0.5f);
+            Gl.glVertex3d(0.5f, 0.5f, -0.5f);
+            Gl.glEnd();
+
+            Gl.glBegin(Gl.GL_POLYGON);
+             Gl.glColor3f(0.0f, 1.0f, 0.0f);
+            Gl.glVertex3d(0.5f, -0.5f, 0.5f);
+            Gl.glVertex3d(-0.5f, -0.5f, 0.5f);
+            Gl.glVertex3d(-0.5f, -0.5f, -0.5f);
+            Gl.glVertex3d(0.5f, -0.5f, -0.5f);
+            Gl.glEnd();
+
+            Gl.glBegin(Gl.GL_POLYGON);
+             Gl.glColor3f(0.0f, 1.0f, 1.0f);
+            Gl.glVertex3d(0.5f, 0.5f, 0.5f);
+            Gl.glVertex3d(-0.5f, 0.5f, 0.5f);
+            Gl.glVertex3d(-0.5f, -0.5f, 0.5f);
+            Gl.glVertex3d(0.5f, -0.5f, 0.5f);
+            Gl.glEnd();
+
+            Gl.glBegin(Gl.GL_POLYGON);
+            Gl.glColor3f(0.0f, 0.0f, 1.0f);
+            Gl.glVertex3d(0.5f, 0.5f, -0.5f);
+            Gl.glVertex3d(-0.5f, 0.5f, -0.5f);
+            Gl.glVertex3d(-0.5f, -0.5f, -0.5f);
+            Gl.glVertex3d(0.5f, -0.5f, -0.5f);
+            Gl.glEnd();
+
         }
     }
 }

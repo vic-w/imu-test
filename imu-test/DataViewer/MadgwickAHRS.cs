@@ -267,5 +267,40 @@ namespace AHRS
             Quaternion[2] = q3 * norm;
             Quaternion[3] = q4 * norm;
         }
+        public float[] rotMat()
+        {
+            float[] m = new float[16];
+            float qx = 0.0f;
+            float qy = 0.0f;
+            float qz = 0.0f;
+            float qw = 0.0f;
+
+            qw = Quaternion[0];
+            qx = Quaternion[1];
+            qy = Quaternion[2];
+            qz = Quaternion[2];
+
+            m[0] = 1.0f - 2.0f * qy * qy - 2.0f * qz * qz;
+            m[1] = 0.0f + 2.0f * qx * qy + 2.0f * qw * qz;
+            m[2] = 0.0f + 2.0f * qx * qz - 2.0f * qw * qy;
+            m[3] = 0.0f;
+
+            m[4] = 0.0f + 2.0f * qx * qy - 2.0f * qw * qz;
+            m[5] = 1.0f - 2.0f * qx * qx - 2.0f * qz * qz;
+            m[6] = 0.0f + 2.0f * qy * qz + 2.0f * qw * qx;
+            m[7] = 0.0f;
+
+            m[8] = 0.0f + 2.0f * qx * qz + 2.0f * qw * qy;
+            m[9] = 0.0f + 2.0f * qy * qz - 2.0f * qw * qx;
+            m[10] = 1.0f - 2.0f * qx * qx - 2.0f * qy * qy;
+            m[11] = 0.0f;
+
+            m[12] = 0.0f;
+            m[13] = 0.0f;
+            m[14] = 0.0f;
+            m[15] = 1.0f;
+
+            return m;
+        }
     }
 }
