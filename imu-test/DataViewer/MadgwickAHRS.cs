@@ -278,7 +278,7 @@ namespace AHRS
             qw = Quaternion[0];
             qx = Quaternion[1];
             qy = Quaternion[2];
-            qz = Quaternion[2];
+            qz = Quaternion[3];
 
             m[0] = 1.0f - 2.0f * qy * qy - 2.0f * qz * qz;
             m[1] = 0.0f + 2.0f * qx * qy + 2.0f * qw * qz;

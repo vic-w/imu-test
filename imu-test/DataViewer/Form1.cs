@@ -29,9 +29,9 @@ namespace WindowsFormsApplication1
         float Gx = 0;
         float Gy = 0;
         float Gz = 0;
-        double Tx = 0;
-        double Ty = 0;
-        double Tz = 0;
+        float Tx = 0;
+        float Ty = 0;
+        float Tz = 0;
         float[] Q;
         float[] M;
 
@@ -106,10 +106,10 @@ namespace WindowsFormsApplication1
                     Gx = System.BitConverter.ToSingle(bytes, 16);
                     Gy = System.BitConverter.ToSingle(bytes, 20);
                     Gz = System.BitConverter.ToSingle(bytes, 24);
-                    Tx = System.BitConverter.ToDouble(bytes, 28);
-                    Ty = System.BitConverter.ToDouble(bytes, 36);
-                    Tz = System.BitConverter.ToDouble(bytes, 44);
-                    imu.Update(Gx, Gy, Gz, Ax, Ay, Az);
+                    Tx = System.BitConverter.ToSingle(bytes, 28);
+                    Ty = System.BitConverter.ToSingle(bytes, 36);
+                    Tz = System.BitConverter.ToSingle(bytes, 44);
+                    imu.Update(Gx, Gy, Gz, Ax, Ay, Az, Tx, Ty, Tz);
                     Q = imu.Quaternion;
                     M = imu.rotMat();
                     data_receiver.ReportProgress(0);
@@ -147,70 +147,53 @@ namespace WindowsFormsApplication1
 
         private void glControl_Paint(object sender, PaintEventArgs e)
         {
-            Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
-            Gl.glLoadIdentity();
+            Gl.glEnable(Gl.GL_DEPTH_TEST);
+            Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
+            Gl.glLoadIdentity();
             Gl.glMultMatrixf(M);
-            //Gl.glRotated(-Q[0]*180/3.14F, Q[1], Q[2], Q[3]);
-            //Gl.glRotated(90, 0, 0, 1);
-            Gl.glBegin(Gl.GL_TRIANGLES);
-            Gl.glColor3f(1.0f, 0.0f, 0.0f);
-            Gl.glVertex2d(0.0, 0.0);
-            Gl.glColor3f(0.0f, 1.0f, 0.0f);
-            Gl.glVertex2d(1.0, 0.0);
-            Gl.glColor3f(0.0f, 0.0f, 1.0f);
-            Gl.glVertex2d(0.5, 0.867);
-            Gl.glEnd();
 
-            Gl.glBegin(Gl.GL_POLYGON);
-             Gl.glColor3f(1.0f, 0.0f, 0.0f);
-            Gl.glVertex3d(0.5f, 0.5f, 0.5f);
-             Gl.glColor3f(1.0f, 0.0f, 0.0f);
-            Gl.glVertex3d(0.5f, -0.5f, 0.5f);
-             Gl.glColor3f(1.0f, 0.0f, 0.0f);
-            Gl.glVertex3d(0.5f, -0.5f, -0.5f);
-             Gl.glColor3f(1.0f, 0.0f, 0.0f);
-            Gl.glVertex3d(0.5f, 0.5f, -0.5f);
-            Gl.glEnd();
-            
-            Gl.glBegin(Gl.GL_POLYGON);
-             Gl.glColor3f(1.0f, 1.0f, 0.0f);
-            Gl.glVertex3d(-0.5f, 0.5f, 0.5f);
-            Gl.glVertex3d(-0.5f, -0.5f, 0.5f);
-            Gl.glVertex3d(-0.5f, -0.5f, -0.5f);
-            Gl.glVertex3d(-0.5f, 0.5f, -0.5f);
-            Gl.glEnd();
+            float[][] vertex_list = 
+            {
+                new float[] {-0.5f, -0.5f, -0.5f},
+                new float[]  {0.5f, -0.5f, -0.5f},
+                new float[] {-0.5f,  0.5f, -0.5f},
+                new float[]  {0.5f,  0.5f, -0.5f},
+                new float[] {-0.5f, -0.5f,  0.5f},
+                new float[]  {0.5f, -0.5f,  0.5f},
+                new float[] {-0.5f,  0.5f,  0.5f},
+                new float[]  {0.5f,  0.5f,  0.5f}
+            };
 
-            Gl.glBegin(Gl.GL_POLYGON);
-             Gl.glColor3f(1.0f, 1.0f, 1.0f);
-            Gl.glVertex3d(0.5f, 0.5f, 0.5f);
-            Gl.glVertex3d(-0.5f, 0.5f, 0.5f);
-            Gl.glVertex3d(-0.5f, 0.5f, -0.5f);
-            Gl.glVertex3d(0.5f, 0.5f, -0.5f);
-            Gl.glEnd();
+            int[][] index_list = 
+            {
+                new int[] {0, 2, 3, 1},
+                new int[] {0, 4, 6, 2},
+                new int[] {0, 1, 5, 4},
+                new int[] {4, 5, 7, 6},
+                new int[] {1, 3, 7, 5},
+                new int[] {2, 6, 7, 3}
+            };
 
-            Gl.glBegin(Gl.GL_POLYGON);
-             Gl.glColor3f(0.0f, 1.0f, 0.0f);
-            Gl.glVertex3d(0.5f, -0.5f, 0.5f);
-            Gl.glVertex3d(-0.5f, -0.5f, 0.5f);
-            Gl.glVertex3d(-0.5f, -0.5f, -0.5f);
-            Gl.glVertex3d(0.5f, -0.5f, -0.5f);
-            Gl.glEnd();
+            float[][] color_list = 
+            {
+                new float[] {1.0f, 0.0f, 0.0f},
+                new float[] {0.0f, 1.0f, 0.0f},
+                new float[] {0.0f, 0.0f, 1.0f},
+                new float[] {1.0f, 1.0f, 0.0f},
+                new float[] {0.0f, 1.0f, 1.0f},
+                new float[] {1.0f, 0.0f, 1.0f}
+            };
 
-            Gl.glBegin(Gl.GL_POLYGON);
-             Gl.glColor3f(0.0f, 1.0f, 1.0f);
-            Gl.glVertex3d(0.5f, 0.5f, 0.5f);
-            Gl.glVertex3d(-0.5f, 0.5f, 0.5f);
-            Gl.glVertex3d(-0.5f, -0.5f, 0.5f);
-            Gl.glVertex3d(0.5f, -0.5f, 0.5f);
-            Gl.glEnd();
-
-            Gl.glBegin(Gl.GL_POLYGON);
-            Gl.glColor3f(0.0f, 0.0f, 1.0f);
-            Gl.glVertex3d(0.5f, 0.5f, -0.5f);
-            Gl.glVertex3d(-0.5f, 0.5f, -0.5f);
-            Gl.glVertex3d(-0.5f, -0.5f, -0.5f);
-            Gl.glVertex3d(0.5f, -0.5f, -0.5f);
+            Gl.glBegin(Gl.GL_QUADS);
+            for (int i = 0; i < 6; ++i)// 有六个面，循环六次
+            {
+                for (int j = 0; j < 4; ++j)     // 每个面有四个顶点，循环四次
+                {
+                    Gl.glColor3fv(color_list[i]);
+                    Gl.glVertex3fv(vertex_list[index_list[i][j]]);
+                }
+            }
             Gl.glEnd();
 
         }
