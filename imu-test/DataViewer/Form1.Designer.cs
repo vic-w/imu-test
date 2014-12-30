@@ -46,6 +46,8 @@
             this.tbQ3 = new System.Windows.Forms.TextBox();
             this.tbQ2 = new System.Windows.Forms.TextBox();
             this.glControl = new Tao.Platform.Windows.SimpleOpenGlControl();
+            this.tbSampleTime = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chartAcc)).BeginInit();
             this.SuspendLayout();
             // 
@@ -184,11 +186,29 @@
             this.glControl.TabIndex = 7;
             this.glControl.Paint += new System.Windows.Forms.PaintEventHandler(this.glControl_Paint);
             // 
+            // tbSampleTime
+            // 
+            this.tbSampleTime.Location = new System.Drawing.Point(456, 487);
+            this.tbSampleTime.Name = "tbSampleTime";
+            this.tbSampleTime.Size = new System.Drawing.Size(100, 21);
+            this.tbSampleTime.TabIndex = 8;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(454, 472);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(83, 12);
+            this.label5.TabIndex = 9;
+            this.label5.Text = "Sample Period";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(579, 520);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.tbSampleTime);
             this.Controls.Add(this.glControl);
             this.Controls.Add(this.tbQ2);
             this.Controls.Add(this.tbQ3);
@@ -226,6 +246,8 @@
         private System.Windows.Forms.TextBox tbQ3;
         private System.Windows.Forms.TextBox tbQ2;
         private Tao.Platform.Windows.SimpleOpenGlControl glControl;
+        private System.Windows.Forms.TextBox tbSampleTime;
+        private System.Windows.Forms.Label label5;
     }
 }
 

@@ -20,18 +20,20 @@ namespace WindowsFormsApplication1
     {
 
         MadgwickAHRS imu;
-        float r;
 
         int x;
+        long[] _sampleTime;
+        int _sampleIdx = 0;
+        float SamplePeriod;
         float Ax = 0;
         float Ay = 0;
         float Az = 0;
         float Gx = 0;
         float Gy = 0;
         float Gz = 0;
-        float Tx = 0;
-        float Ty = 0;
-        float Tz = 0;
+        double Tx = 0;
+        double Ty = 0;
+        double Tz = 0;
         float[] Q;
         float[] M;
 
@@ -39,14 +41,15 @@ namespace WindowsFormsApplication1
         Series Ay_series;
         Series Az_series;
 
+        long lastTimeMillisecond = 0;
+
         public Form1()
         {
             InitializeComponent();
 
             glControl.InitializeContexts();
 
-            const float SampleTime = 0.02F;
-            imu = new MadgwickAHRS(SampleTime);
+            imu = new MadgwickAHRS(0.01655F);
             Q = new float[4];
             Q[0] = 0;
             Q[1] = 0;
@@ -70,8 +73,9 @@ namespace WindowsFormsApplication1
             M[14] = 0;
             M[15] = 1;
 
-            r = 0;
             x = 0;
+            _sampleTime = new long[100];
+
             data_receiver.RunWorkerAsync();
 
             Ax_series = new Series("Ax");
@@ -93,28 +97,36 @@ namespace WindowsFormsApplication1
             const int listenPort = 22222;
             UdpClient listener = new UdpClient(listenPort);
             IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, listenPort);
+            lastTimeMillisecond = DateTime.Now.Ticks;
 
             while (true)
             {
-                while (true)
-                {
-                    byte[] bytes = listener.Receive(ref groupEP);
-                    string s = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
-                    Ax = System.BitConverter.ToSingle(bytes, 4);
-                    Ay = System.BitConverter.ToSingle(bytes, 8);
-                    Az = System.BitConverter.ToSingle(bytes, 12);
-                    Gx = System.BitConverter.ToSingle(bytes, 16);
-                    Gy = System.BitConverter.ToSingle(bytes, 20);
-                    Gz = System.BitConverter.ToSingle(bytes, 24);
-                    Tx = System.BitConverter.ToSingle(bytes, 28);
-                    Ty = System.BitConverter.ToSingle(bytes, 36);
-                    Tz = System.BitConverter.ToSingle(bytes, 44);
-                    imu.Update(Gx, Gy, Gz, Ax, Ay, Az, Tx, Ty, Tz);
-                    Q = imu.Quaternion;
-                    M = imu.rotMat();
-                    data_receiver.ReportProgress(0);
-                    x++;
-                }
+                byte[] bytes = listener.Receive(ref groupEP);
+                long currTimeMillisecond = DateTime.Now.Ticks;
+                _sampleTime[_sampleIdx] = currTimeMillisecond;
+                int nextSampleIdx = (_sampleIdx + 1) % 100;
+
+                SamplePeriod = (_sampleTime[_sampleIdx] - _sampleTime[nextSampleIdx]) / 1000000000F;
+                _sampleIdx = nextSampleIdx;
+
+                imu.SamplePeriod = SamplePeriod;
+
+                string s = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
+                Ax = System.BitConverter.ToSingle(bytes, 4);
+                Ay = System.BitConverter.ToSingle(bytes, 8);
+                Az = System.BitConverter.ToSingle(bytes, 12);
+                Gx = System.BitConverter.ToSingle(bytes, 16);// / Convert.ToSingle(Math.PI) * 180.0F;
+                Gy = System.BitConverter.ToSingle(bytes, 20);// / Convert.ToSingle(Math.PI) * 180.0F;
+                Gz = System.BitConverter.ToSingle(bytes, 24);// / Convert.ToSingle(Math.PI) * 180.0F;
+                Tx = System.BitConverter.ToDouble(bytes, 28);
+                Ty = System.BitConverter.ToDouble(bytes, 36);
+                Tz = System.BitConverter.ToDouble(bytes, 44);
+                imu.Update(Gx, Gy, Gz, Ax, Ay, Az, Convert.ToSingle(Tx), Convert.ToSingle(Ty), Convert.ToSingle(Tz));
+                //imu.Update(Gx, Gy, Gz, Ax, Ay, Az);
+                Q = imu.Quaternion;
+                M = imu.rotMat();
+                data_receiver.ReportProgress(0);
+                x++;
             }
         }
 
@@ -130,6 +142,8 @@ namespace WindowsFormsApplication1
                 tbQ1.Text = Q[1].ToString();
                 tbQ2.Text = Q[2].ToString();
                 tbQ3.Text = Q[3].ToString();
+
+                tbSampleTime.Text = SamplePeriod.ToString();
 
                 chartAcc.Series[0].Points.Add(Ax);
                 chartAcc.Series[1].Points.Add(Ay);
