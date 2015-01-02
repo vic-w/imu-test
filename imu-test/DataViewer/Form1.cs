@@ -49,7 +49,7 @@ namespace WindowsFormsApplication1
 
             glControl.InitializeContexts();
 
-            imu = new MadgwickAHRS(0.01655F);
+            imu = new MadgwickAHRS(0.02F, 1.0F);
             Q = new float[4];
             Q[0] = 0;
             Q[1] = 0;
@@ -163,8 +163,9 @@ namespace WindowsFormsApplication1
         {
             Gl.glEnable(Gl.GL_DEPTH_TEST);
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
-            Gl.glMatrixMode(Gl.GL_MODELVIEW);
+            //Gl.glMatrixMode(Gl.GL_MODELVIEW);
             Gl.glLoadIdentity();
+            Glu.gluLookAt(0, 0, 0, 100, 0, 0, 0, 0, 1);
             Gl.glMultMatrixf(M);
 
             float[][] vertex_list = 
