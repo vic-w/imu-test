@@ -1,5 +1,8 @@
 imu-test
 ========
+此工程利用iPhone内置的加速度、陀螺仪、地磁等传感器估计手机在空间中的姿态。
+
+效果演示：[http://v.youku.com/v_show/id_XODYzMDgzNjY4.html](http://v.youku.com/v_show/id_XODYzMDgzNjY4.html)
 
 1. 运行此程序需要在iPhone上安装Sensor Data Streamer.可在App store中下载.
   * iPhone4S或以上型号才包含地磁传感器
