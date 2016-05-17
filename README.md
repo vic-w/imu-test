@@ -9,5 +9,5 @@ imu-test
 2. 使用时显示器面向南方,使用者面向北方。
 3. 将电脑与iPhone连接至同一路由器。
 4. 编译并运行data_viewer工程。（电脑需要安装taoframework-2.1.0）
-5. 打开Sensor Data Streamer, 输入电脑的ip地址,端口号为22222,点击"Send Data to PC"。
+5. 打开Sensor Data Streamer, 输入电脑的ip地址（手机与电脑需要在同一网段）,端口号为22222,点击"Send Data to PC"。
 6. 等待模型稳定,即可进行姿态估计实验。
